@@ -1,24 +1,22 @@
-const amqp = require('amqplib/callback_api');
+const amqp = require('amqplib');
 
+const host = 'amqp://localhost';
 const q = 'hello';
 
-amqp.connect('amqp://localhost', function(err, conn) {
-  if (err) {
-    console.error('connect error', err);
+(async function() {
+  try {
+    const conn = await amqp.connect(host);
+    const ch = await conn.createChannel();
+    const queue = await ch.assertQueue(q, { durable: false });
+    const content = JSON.stringify({ x: 1, y: 2 });
+    await ch.sendToQueue(q, new Buffer(content));
+
+    console.log('[x] Send', content);
+    setTimeout(async () => {
+    	await conn.close();
+    }, 500);
+  } catch (error) {
+    console.error('error', error);
     process.exit(1);
   }
-
-  conn.createChannel(function(err, ch) {
-    if (err) {
-      console.error('create channel error', err);
-      process.exit(1);
-    }
-
-    ch.assertQueue(q, {durable: false});
-    // Note: on Node 6 Buffer.from(msg) should be used
-    ch.sendToQueue(q, new Buffer('Hello World!'));
-    console.log(" [x] Sent 'Hello World!'");
-  });
-
-  setTimeout(function() { conn.close(); process.exit(0) }, 5000);
-});
+})();
