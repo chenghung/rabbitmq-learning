@@ -1,8 +1,6 @@
-const amqp = require('amqplib');
+const { connect } = require('../lib');
 
-const host = 'amqp://localhost';
 const ex = 'direct_logs';
-
 const logLevels = process.argv.slice(2) || ['info'];
 
 (async function() {

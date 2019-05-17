@@ -1,11 +1,10 @@
-const amqp = require('amqplib');
+const { connect } = require('../lib');
 
-const host = 'amqp://localhost';
 const q = 'hello';
 
 (async function() {
   try {
-    const conn = await amqp.connect(host);
+    const conn = await connect();
     const ch = await conn.createChannel();
     const queue = await ch.assertQueue(q, { durable: false });
     const content = JSON.stringify({ x: 1, y: 2 });

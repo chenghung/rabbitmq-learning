@@ -1,6 +1,5 @@
-const amqp = require('amqplib');
+const { connect } = require('../lib');
 
-const host = 'amqp://localhost';
 const ex = 'direct_logs';
 
 const logLevel = process.argv.slice(2, 3)[0] || 'info';
@@ -8,7 +7,6 @@ const msg = process.argv.slice(3, 4)[0] || 'Hello World!';
 
 (async function() {
   try {
-    const conn = await amqp.connect(host);
     const ch = await conn.createChannel();
     ch.assertExchange(ex, 'direct', { durable:  false });
 

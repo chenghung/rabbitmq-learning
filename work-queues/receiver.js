@@ -1,10 +1,9 @@
-const amqp = require('amqplib');
+const { connect } = require('../lib');
 
-const host = 'amqp://localhost';    
 const q = 'tasks';
 
 (async function() {
-  const conn = await amqp.connect(host);
+  const conn = await connect();
   const ch = await conn.createChannel();
   await ch.assertQueue(q, { durable: true });
   const handler = async (msg) => {

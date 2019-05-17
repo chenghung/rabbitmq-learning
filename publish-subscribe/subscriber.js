@@ -1,10 +1,9 @@
-const amqp = require('amqplib');
+const { connect } = require('../lib');
 
-const host = 'amqp://localhost';
 const ex = 'logs';
 
 (async function() {
-  const conn = await amqp.connect(host);
+  const conn = await connect();
   const ch = await conn.createChannel();
   ch.assertExchange(ex, 'fanout', { durable: false });
   const queue = await ch.assertQueue('', { exclusive: true });
